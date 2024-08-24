@@ -9,6 +9,7 @@ use Modules\Admin\App\Http\Controllers\Api\ApiAdminCategoryController;
 use Modules\Admin\App\Http\Controllers\Api\ApiAdminProductController;
 use Modules\Admin\App\Http\Controllers\Api\ApiAdminStockInController;
 use Modules\Admin\App\Http\Controllers\Api\ApiAdminStockOutController;
+use Modules\Admin\App\Http\Controllers\Api\ApiAdminUserController;
 /*
     |--------------------------------------------------------------------------
     | API Routes
@@ -42,5 +43,6 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function 
         Route::resource('products',ApiAdminProductController::class);
         Route::resource('stock-in',ApiAdminStockInController::class);
         Route::resource('stock-out',ApiAdminStockOutController::class);
+        Route::resource('account',ApiAdminUserController::class);
     });
 });
