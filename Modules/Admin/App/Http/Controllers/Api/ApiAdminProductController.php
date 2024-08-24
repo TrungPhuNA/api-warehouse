@@ -5,6 +5,9 @@ namespace Modules\Admin\App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Admin\App\Http\Requests\Api\RequestApiStoreProduct;
+use Modules\Admin\App\Models\Product;
+use Modules\Admin\App\Models\ProductVariant;
+use Modules\Admin\App\Models\VariantAttribute;
 use Modules\Common\Query\ProductQueryService;
 use Modules\Common\Service\ErrorLogService;
 use Modules\Common\Service\ResponseService;
@@ -28,7 +31,7 @@ class ApiAdminProductController extends Controller
             ];
 
             $data = [
-                'meta'  => $meta,
+                'meta'     => $meta,
                 'products' => $products
             ];
             return ResponseService::sendSuccess($data);
@@ -89,11 +92,57 @@ class ApiAdminProductController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    public function storeV2(Request $request)
     {
-        //
+        // Validate the request
+        $request->validate([
+            'category_id'                                => 'required|exists:categories,id',
+            'name'                                       => 'required|string|max:255',
+            'description'                                => 'nullable|string',
+            'avatar'                                     => 'nullable|string',
+            'variants'                                   => 'required|array',
+            'variants.*.price'                           => 'required|numeric',
+            'variants.*.stock'                           => 'required|integer',
+            'variants.*.attributes'                      => 'required|array',
+            'variants.*.attributes.*.attribute_value_id' => 'required|exists:attribute_values,id',
+        ]);
+
+        // Create the product
+        $product = Product::create([
+            'category_id' => $request->category_id,
+            'name'        => $request->name,
+            'description' => $request->description,
+            'avatar'      => $request->avatar,
+        ]);
+
+        // Create the variants and variant attributes
+        foreach ($request->variants as $variantData) {
+            $variant = ProductVariant::create([
+                'product_id' => $product->id,
+                'price'      => $variantData['price'],
+                'stock'      => $variantData['stock'],
+                'image'      => $variantData['image'] ?? null,
+            ]);
+
+            foreach ($variantData['attributes'] as $attributeData) {
+                VariantAttribute::create([
+                    'variant_id'         => $variant->id,
+                    'attribute_value_id' => $attributeData['attribute_value_id'],
+                ]);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Product created successfully!',
+            'product' => $product->load('variants.variantAttributes.attributeValue'),
+        ], 201);
+    }
+
+    public function showV2(Request $request, $id)
+    {
+        $product = Product::with(['variants.variantAttributes.attributeValue', 'variants.variantAttributes.attributeValue.attribute'])
+            ->findOrFail($id);
+
+        return response()->json($product);
     }
 }

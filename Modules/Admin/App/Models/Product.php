@@ -21,4 +21,9 @@ class Product extends Model
     {
         //return ProductFactory::new();
     }
+
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
 }

@@ -10,6 +10,7 @@ use Modules\Admin\App\Http\Controllers\Api\ApiAdminProductController;
 use Modules\Admin\App\Http\Controllers\Api\ApiAdminStockInController;
 use Modules\Admin\App\Http\Controllers\Api\ApiAdminStockOutController;
 use Modules\Admin\App\Http\Controllers\Api\ApiAdminUserController;
+use Modules\Admin\App\Http\Controllers\Api\ApiAdminAttributeController;
 /*
     |--------------------------------------------------------------------------
     | API Routes
@@ -38,11 +39,14 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function 
         Route::resource('wallet',ApiAdminWalletController::class)->except(["update","edit","delete","create","destroy","show"]);
         Route::post('wallet/withdraw-money',[ApiAdminWalletController::class,'withdrawMoney']);
         Route::get('wallet/history',[ApiAdminWalletController::class,'history']);
+        Route::resource('account',ApiAdminUserController::class);
 
+        Route::resource('attributes',ApiAdminAttributeController::class);
         Route::resource('categories',ApiAdminCategoryController::class);
+        Route::post('products/store-v2',[ApiAdminProductController::class,'storeV2']);
+        Route::get('products/show-v2',[ApiAdminProductController::class,'showV2']);
         Route::resource('products',ApiAdminProductController::class);
         Route::resource('stock-in',ApiAdminStockInController::class);
         Route::resource('stock-out',ApiAdminStockOutController::class);
-        Route::resource('account',ApiAdminUserController::class);
     });
 });
