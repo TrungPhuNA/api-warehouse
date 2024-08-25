@@ -21,4 +21,9 @@ class AttributeValue extends Model
     {
         //return AttributeValueFactory::new();
     }
+
+    public function attribute()
+    {
+        return $this->belongsTo(Attribute::class,'attribute_id');
+    }
 }
