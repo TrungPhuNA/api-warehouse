@@ -14,6 +14,8 @@ use Modules\Common\Base\ModelService;
 
 class CategoryQueryService extends ModelService
 {
+
+	const LIKE_FULL = ['name'];
     public static function getAll(Request $request, $items = null)
     {
         $items = Category::query();
