@@ -182,7 +182,7 @@ class ModelService
 
                 if (in_array($key, static::LIKE)) {
                     $lowerValue = strtolower($value);
-                    $items->whereRaw("LOWER({$key}) ilike '{$lowerValue}%'");
+                    $items->whereRaw("LOWER({$key}) LIKE '{$lowerValue}%'");
 
                     continue;
                 }
