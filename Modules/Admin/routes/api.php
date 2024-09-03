@@ -52,3 +52,8 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function 
         Route::resource('stock-out',ApiAdminStockOutController::class);
     });
 });
+
+Route::prefix('v1/uploads')->name('api.')->group(function () {
+    Route::post('',[\Modules\Admin\App\Http\Controllers\Api\FileUploadController::class,'upload']);
+    Route::get('/{id}',[\Modules\Admin\App\Http\Controllers\Api\FileUploadController::class,'getFile']);
+});
