@@ -46,6 +46,7 @@ class FileUploadController extends Controller
                 return response()->json(['error' => 'File not found.'], 404);
             }
 
+
             $file = Storage::disk('public')->get('uploads/' . $id);
             $type = Storage::disk('public')->mimeType('uploads/' . $id);
             return response($file, 200)->header('Content-Type', $type);

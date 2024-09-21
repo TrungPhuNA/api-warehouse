@@ -3,6 +3,7 @@
 namespace Modules\Admin\App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use Modules\Common\Service\ErrorLogService;
 use Modules\Common\Service\ResponseService;
 use Modules\User\App\Http\Requests\Api\RequestApiLoginUser;
@@ -36,6 +37,8 @@ class ApiAdminAuthController extends Controller
     {
         try {
             $user = RegisterServiceUser::login($request);
+            if(!$user)
+                return ResponseService::sendError("Tên đăng nhập hoặc mật khẩu không chính xác.");
             return ResponseService::sendSuccess([
                 'user' => $user
             ]);
